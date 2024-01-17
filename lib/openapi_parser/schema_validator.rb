@@ -41,19 +41,21 @@ class OpenAPIParser::SchemaValidator
     # @param [OpenAPIParser::Schemas:v:Schema]
     # @param [OpenAPIParser::SchemaValidator::Options] options
     # @return [Object] coerced or original params
-    def validate(value, schema, options)
-      new(value, schema, options).validate_data
+    def validate(value, schema, options, validation_scope = 'SchemaValidator')
+      new(value, schema, options, validation_scope).validate_data
     end
   end
 
   # @param [Hash] value
   # @param [OpenAPIParser::Schemas::Schema] schema
   # @param [OpenAPIParser::SchemaValidator::Options] options
-  def initialize(value, schema, options)
+  def initialize(value, schema, options, validation_scope)
     @value = value
     @schema = schema
     @coerce_value = options.coerce_value
     @datetime_coerce_class = options.datetime_coerce_class
+
+    @validation_scope = validation_scope
   end
 
   # execute validate data
@@ -119,46 +121,46 @@ class OpenAPIParser::SchemaValidator
     end
 
     def string_validator
-      @string_validator ||= OpenAPIParser::SchemaValidator::StringValidator.new(self, @coerce_value, @datetime_coerce_class)
+      @string_validator ||= OpenAPIParser.const_get("#{@validation_scope}::StringValidator").new(self, @coerce_value, @datetime_coerce_class)
     end
 
     def integer_validator
-      @integer_validator ||= OpenAPIParser::SchemaValidator::IntegerValidator.new(self, @coerce_value)
+      @integer_validator ||= OpenAPIParser.const_get("#{@validation_scope}::IntegerValidator").new(self, @coerce_value)
     end
 
     def float_validator
-      @float_validator ||= OpenAPIParser::SchemaValidator::FloatValidator.new(self, @coerce_value)
+      @float_validator ||= OpenAPIParser.const_get("#{@validation_scope}::FloatValidator").new(self, @coerce_value)
     end
 
     def boolean_validator
-      @boolean_validator ||= OpenAPIParser::SchemaValidator::BooleanValidator.new(self, @coerce_value)
+      @boolean_validator ||= OpenAPIParser.const_get("#{@validation_scope}::BooleanValidator").new(self, @coerce_value)
     end
 
     def object_validator
-      @object_validator ||= OpenAPIParser::SchemaValidator::ObjectValidator.new(self, @coerce_value)
+      @object_validator ||= OpenAPIParser.const_get("#{@validation_scope}::ObjectValidator").new(self, @coerce_value)
     end
 
     def array_validator
-      @array_validator ||= OpenAPIParser::SchemaValidator::ArrayValidator.new(self, @coerce_value)
+      @array_validator ||= OpenAPIParser.const_get("#{@validation_scope}::ArrayValidator").new(self, @coerce_value)
     end
 
     def any_of_validator
-      @any_of_validator ||= OpenAPIParser::SchemaValidator::AnyOfValidator.new(self, @coerce_value)
+      @any_of_validator ||= OpenAPIParser.const_get("#{@validation_scope}::AnyOfValidator").new(self, @coerce_value)
     end
 
     def all_of_validator
-      @all_of_validator ||= OpenAPIParser::SchemaValidator::AllOfValidator.new(self, @coerce_value)
+      @all_of_validator ||= OpenAPIParser.const_get("#{@validation_scope}::AllOfValidator").new(self, @coerce_value)
     end
 
     def one_of_validator
-      @one_of_validator ||= OpenAPIParser::SchemaValidator::OneOfValidator.new(self, @coerce_value)
+      @one_of_validator ||= OpenAPIParser.const_get("#{@validation_scope}::OneOfValidator").new(self, @coerce_value)
     end
 
     def nil_validator
-      @nil_validator ||= OpenAPIParser::SchemaValidator::NilValidator.new(self, @coerce_value)
+      @nil_validator ||= OpenAPIParser.const_get("#{@validation_scope}::NilValidator").new(self, @coerce_value)
     end
 
     def unspecified_type_validator
-      @unspecified_type_validator ||= OpenAPIParser::SchemaValidator::UnspecifiedTypeValidator.new(self, @coerce_value)
+      @unspecified_type_validator ||= OpenAPIParser.const_get("#{@validation_scope}::UnspecifiedTypeValidator").new(self, @coerce_value)
     end
 end

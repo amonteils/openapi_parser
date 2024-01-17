@@ -12,7 +12,7 @@ module OpenAPIParser::Schemas31
     # @param [Hash] params
     # @param [OpenAPIParser::SchemaValidator::Options] options
     def validate_parameter(params, options)
-      OpenAPIParser::SchemaValidator.validate(params, schema, options)
+      OpenAPIParser::SchemaValidator.validate(params, schema, options, 'SchemaValidator31')
     end
   end
 end
