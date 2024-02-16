@@ -14,7 +14,7 @@ module OpenAPIParser::Schemas31
     # @return [Object] coerced or original params
     # @param [OpenAPIParser::SchemaValidator::Options] options
     def validate_params(params, options)
-      ::OpenAPIParser::SchemaValidator.validate(params, schema, options)
+      ::OpenAPIParser::SchemaValidator.validate(params, schema, options, 'SchemaValidator31')
     end
   end
 end
